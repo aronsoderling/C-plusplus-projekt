@@ -4,3 +4,6 @@
 *.a
 myclient
 myserver
+client
+runner
+*.d.*

@@ -16,7 +16,7 @@ CXXFLAGS += -std=c++11
 #CXXFLAGS += -stdlib=libc++
 #LDFLAGS += -stdlib=libc++
 
-all: libclientserver.a
+all: libclientserver.a runner client
 
 # Create the library; ranlib is for Darwin and maybe other systems.
 # Doesn't seem to do any damage on other systems.
@@ -24,6 +24,9 @@ all: libclientserver.a
 libclientserver.a: connection.o server.o
 	ar rv libclientserver.a  connection.o server.o
 	ranlib libclientserver.a
+
+runner: runner.o mem_server.o news_server.o message_handler.o server.o connection.o
+client: client.o connection.o message_handler.o
 
 # Phony targets
 .PHONY: all clean
