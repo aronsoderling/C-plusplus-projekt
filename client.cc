@@ -44,6 +44,7 @@ int main(int argc, char* argv[]) {
 	if (!conn.isConnected()) {
 		cerr << "Connection attempt failed" << endl;
 		exit(1);
+
 	}
 
 	MessageHandler h;	

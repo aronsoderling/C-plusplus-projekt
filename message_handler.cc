@@ -25,6 +25,7 @@ Command MessageHandler::readMessage(const Connection& conn) const{
 		ch = conn.read();
 	}
 	return Command(bytes);
+
 }
 
 void MessageHandler::writeMessage(const Connection& conn, const Command cmd) const{
