@@ -8,17 +8,21 @@
 #include <vector>
 #include <iostream>
 
+struct Argument{
+	Argument(std::string v) : str_val(v), type(Protocol::PAR_STRING){};
+	Argument(int v) : int_val(v), type(Protocol::PAR_NUM){};
+	char type;
+	std::string str_val;
+	int int_val;
+};
+
 struct Command{
 	Command(std::string str){	
-		char res;
+		std::string res;
 		std::stringstream ss;
 		ss << str;
 		std::string cmd_name;
 		ss >> cmd_name;
-	
-		while(ss >> res){
-			args.push_back(res);
-		}
 		
 		char cmd_id;
 		if (cmd_name == "list"){
@@ -33,19 +37,21 @@ struct Command{
 			std::cout << "Unknown command" << std::endl;
 		}
 
+		while (ss >> res){
+			if (cmd_name == "list"){
+				args.push_back(Argument(res));
+			} else if (cmd_name == "something else"){
+
+			}
+		}
+
 		Command(cmd_id, args);
 	}
+	Command(char i, std::vector<Argument> a) : id(i), args(a) {};
 
-	Command(std::vector<char> bytes){
-		id = bytes[0];
-		for (int i = 1; i-1 < bytes.size(); ++i){
-			args.push_back(bytes[i]);
-		}
-	}
 	
-	Command(char i, std::vector<char> a) : id(i), args(a) {};
 	char id;
-	std::vector<char> args; 
+	std::vector<Argument> args; 
 };
 
 class MessageHandler {
@@ -54,6 +60,8 @@ public:
 	
 	void writeMessage(const Connection& conn, const Command cmd) const;
 	Command readMessage(const Connection& conn) const;
+	static void writeString(const Connection& conn, std::string value);
+	static std::string readString(const Connection& conn);
 	static void writeInt(const Connection& conn, int value);
 	static int readInt(const Connection& conn);
 private:

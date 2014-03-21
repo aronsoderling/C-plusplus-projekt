@@ -9,7 +9,6 @@ using namespace std;
 
 void NewsServer::run(){
 	MessageHandler h;
-	
 	Server server(port);
 
 	while (true) {
@@ -35,9 +34,9 @@ void NewsServer::run(){
 
 Command NewsServer::executeCommand(Command c){
 	cout << "Command recieved: ";
-	for(char ch : c.args){
-		cout << ch << " ";
+	for(Argument a : c.args){
+		//cout << ch << " ";
 	}
 	cout << endl;
-	return Command(Protocol::ANS_LIST_NG, vector<char>());
+	return Command(Protocol::ANS_LIST_NG, vector<Argument>());
 }

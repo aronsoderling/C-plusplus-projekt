@@ -13,9 +13,8 @@ string readString(const Connection& conn) {
 	string s;
 	char ch;
 	cout << "here11" << endl;
-	while ((ch = conn.read()) != '$') {
+	while (ch = conn.read()) {
 		s += ch;
-		cout << "here111" << endl;
 		cout << ch << endl;
 	}
 	cout << "here12" << endl;
@@ -54,6 +53,7 @@ int main(int argc, char* argv[]) {
 	string cmd_str;
 	while (getline(cin, cmd_str)) {
 		Command c(cmd_str);
+
 		try {
 			cout << cmd_str << " > ";
 			cout << "here 1" << endl;
