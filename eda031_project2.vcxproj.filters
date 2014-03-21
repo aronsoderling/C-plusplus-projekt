@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Resources">
+      <UniqueIdentifier>61d49b22-6bfa-4bc8-a8b4-e7e4573dcbaf</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tga;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="test">
+      <UniqueIdentifier>{194ffa5f-c460-48d6-846f-6c2ca4cc850d}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="client.cc" />
+    <ClCompile Include="connection.cc" />
+    <ClCompile Include="mem_server.cc" />
+    <ClCompile Include="message_handler.cc" />
+    <ClCompile Include="news_server.cc" />
+    <ClCompile Include="runner.cc" />
+    <ClCompile Include="server.cc" />
+    <ClCompile Include="test\myclient.cc">
+      <Filter>test</Filter>
+    </ClCompile>
+    <ClCompile Include="test\myserver.cc">
+      <Filter>test</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="connection.h" />
+    <ClInclude Include="connectionclosedexception.h" />
+    <ClInclude Include="mem_server.h" />
+    <ClInclude Include="message_handler.h" />
+    <ClInclude Include="news.h" />
+    <ClInclude Include="news_server.h" />
+    <ClInclude Include="protocol.h" />
+    <ClInclude Include="server.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Makefile" />
+    <None Include="README" />
+    <None Include="test\Makefile">
+      <Filter>test</Filter>
+    </None>
+  </ItemGroup>
+</Project>

@@ -16,8 +16,11 @@ void NewsServer::run(){
 		auto conn = server.waitForActivity();
 		if (conn != nullptr) {
 			try {
+				cout << "Received command" << endl;
 				Command result = executeCommand(h.readMessage(*conn));
+				cout << "Will now write response..." << endl;
 				h.writeMessage(*conn, result);
+				cout << "Response written" << endl;
 			} catch (ConnectionClosedException&) {
 				server.deregisterConnection(conn);
 				cout << "Client closed connection" << endl;
@@ -31,11 +34,10 @@ void NewsServer::run(){
 }
 
 Command NewsServer::executeCommand(Command c){
-	cout << "Command recieved: " << c.name << " ";
-	for(string s : c.args){
-		cout << s << " ";
+	cout << "Command recieved: ";
+	for(char ch : c.args){
+		cout << ch << " ";
 	}
 	cout << endl;
-
-	return Command("list", vector<string>());
+	return Command(Protocol::ANS_LIST_NG, vector<char>());
 }

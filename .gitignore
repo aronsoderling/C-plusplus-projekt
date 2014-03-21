@@ -5,5 +5,10 @@
 myclient
 myserver
 client
+client.exe
 runner
+runner.exe
 *.d.*
+Generated Files
+Release
+Debug

@@ -5,21 +5,22 @@
 #include <stdexcept>
 #include <memory>
 #include <string.h>
+#include <stdlib.h> // strtol
 
 using namespace std;
 
 int main(int argc, char* argv[]){
 	if (argc != 3) {
 		cerr << "Usage: myserver type port-number" << endl;
-		exit(1);
+		return 1;
 	}
 	
 	int port = -1;
 	try {
-		port = stoi(argv[2]);
+		port = strtol(argv[2], 0, 10); // stoi(argv[2]); does not work in cygwin
 	} catch (exception& e) {
 		cerr << "Wrong port number. " << e.what() << endl;
-		exit(1);
+		return 1;
 	}
 	
 	unique_ptr<NewsServer> s;
@@ -29,7 +30,7 @@ int main(int argc, char* argv[]){
 		//s = unique_ptr<NewsServer>( new DBServer(port) );
 	}else{
 		cerr << "Wrong type. Type must be memory or database. " << endl;
-		exit(1);
+		return 1;
 	}
 	s->run();
 }
