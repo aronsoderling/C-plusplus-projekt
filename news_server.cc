@@ -45,6 +45,8 @@ Command NewsServer::executeCommand(Command c){
 			args.push_back(Argument(g.getName()));
 		}
 		return Command(Protocol::ANS_LIST_NG, args);
+	} else if (c.id == Protocol::COM_CREATE_NG){
+		createGroup(c.args[0].str_val);
 	}
 	return Command(Protocol::ANS_NAK, vector<Argument>());
 }

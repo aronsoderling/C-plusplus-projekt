@@ -10,20 +10,20 @@ MemServer::MemServer(int p) : NewsServer(p){}
 vector<Group> MemServer::listGroups(){
 	return groups;
 }
-void MemServer::createGroup(string name){
+bool MemServer::createGroup(string name){
 	groups.push_back(Group(groups.size()+1, name));
 }
-void MemServer::deleteGroup(string name){
+bool MemServer::deleteGroup(string name){
 
 }
 vector<Article> MemServer::listArticles(int groupId){
 	return vector<Article>();
 }
-void MemServer::createArticle(int groupId, string title, 
+bool MemServer::createArticle(int groupId, string title, 
 		string author, string text){
 
 }
-void MemServer::deleteArticle(int groupId, string articleId){
+bool MemServer::deleteArticle(int groupId, string articleId){
 
 }
 Article MemServer::getArticle(int groupId, string articleId){

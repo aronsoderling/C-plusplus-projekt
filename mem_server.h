@@ -10,12 +10,12 @@ class MemServer : public NewsServer {
 public:
 	MemServer(int port);
 	std::vector<Group> listGroups();
-	void createGroup(std::string name);
-	void deleteGroup(std::string name);
+	bool createGroup(std::string name);
+	bool deleteGroup(std::string name);
 	std::vector<Article> listArticles(int groupId);
-	void createArticle(int groupId, std::string title, 
+	bool createArticle(int groupId, std::string title, 
 		std::string author, std::string text);
-	void deleteArticle(int groupId, std::string articleId);
+	bool deleteArticle(int groupId, std::string articleId);
 	Article getArticle(int groupId, std::string articleId);
 private:
 	std::vector<Group> groups;
