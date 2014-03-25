@@ -11,12 +11,13 @@ class NewsServer {
 public:
 	virtual std::vector<Group> listGroups() = 0;
 	virtual bool createGroup(std::string name) = 0;
-	virtual bool deleteGroup(std::string name) = 0;
+	virtual bool deleteGroup(int id) = 0;
+	virtual bool existsGroup(int id) = 0;
 	virtual std::vector<Article> listArticles(int groupId) = 0;
-	virtual bool createArticle(int groupId, std::string title, 
+	virtual void createArticle(int groupId, std::string title, 
 		std::string author, std::string text) = 0;
-	virtual bool deleteArticle(int groupId, std::string articleId) = 0;
-	virtual Article getArticle(int groupId, std::string articleId) = 0;
+	virtual void deleteArticle(int groupId, int articleId) = 0;
+	virtual Article getArticle(int groupId, int articleId) = 0;
 	void run();
 	Command executeCommand(Command c);
 protected:

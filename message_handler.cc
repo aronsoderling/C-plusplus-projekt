@@ -26,14 +26,14 @@ Command MessageHandler::readMessage(const Connection& conn) const{
 
 	while (par_type = conn.read()){
 		par_enum = static_cast<Protocol::a>(par_type);
+		Argument arg(par_enum);
 		//cout << "read " << Protocol::map(par_enum) << endl;
 		if (par_type == Protocol::ANS_END || par_type == Protocol::COM_END){
 			//cout << "end of command byte received" << par_type << endl;
 			break;
 		} else if (par_type == Protocol::PAR_NUM){
-			Argument arg(readInt(conn));
+			arg = Argument(readInt(conn));
 			//cout << "number parameter received" << arg.int_val << endl;
-			args.push_back(arg);
 		} else if (par_type == Protocol::PAR_STRING){
 			int length = conn.read();
 			stringstream ss;
@@ -42,12 +42,10 @@ Command MessageHandler::readMessage(const Connection& conn) const{
 			}
 			string s;
 			ss >> s;
-			Argument arg(s);
+			arg = Argument(s);
 			//cout << "string parameter received" << arg.str_val << endl;
-			args.push_back(arg);
-		} else{
-			cerr << "Unknown parameter" << endl;
 		}
+		args.push_back(arg);
 	}
 	Command result(cmd_id, args);
 	cout << "Bytes converted into command: " << result << endl;
@@ -64,8 +62,6 @@ void MessageHandler::writeMessage(const Connection& conn, const Command cmd) con
 			writeInt(conn, arg.int_val);
 		} else if (arg.type == Protocol::PAR_STRING){
 			writeString(conn, arg.str_val);
-		} else{
-			cerr << "Unknown argument type" << endl;
 		}
 	}
 	//cout << "wrote end " << static_cast<Protocol::a>(end) << endl;

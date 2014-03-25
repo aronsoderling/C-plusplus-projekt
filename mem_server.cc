@@ -12,18 +12,22 @@ vector<Group> MemServer::listGroups(){
 	return groups;
 }
 bool MemServer::createGroup(string name){
-	if(find(groups.begin(), groups.end(), 
+	cout << "createGroup(" << name << ")" << endl;
+	if (groups.empty()){
+		groups.push_back(Group(newGroupId(), name));
+		return true;
+	}
+	if(find_if(groups.begin(), groups.end(), 
 		[name](const Group& g) {return g.getName() == name;})
 		!= groups.end()){
-	
-		groups.push_back(Group(groups.size()+1, name));
-		return true;
-	}else{
 		return false;
+	}else{
+		groups.push_back(Group(newGroupId(), name));
+		return true;
 	}
 }
 bool MemServer::deleteGroup(int groupId){
-	auto pos = find(groups.begin(), groups.end(),
+	auto pos = find_if(groups.begin(), groups.end(),
 		[groupId] (const Group& g) { return g.getId() == groupId; } );
 	if(pos != groups.end()){
 		groups.erase(pos);
@@ -33,52 +37,53 @@ bool MemServer::deleteGroup(int groupId){
 	}
 }
 vector<Article> MemServer::listArticles(int groupId){
-	auto g = find(groups.begin(), groups.end(),
+	auto g = find_if(groups.begin(), groups.end(),
 		[groupId] (const Group& g) { return g.getId() == groupId; } 
 		);
 	if(g != groups.end()){
 		return g->getArticles();
 	}else{
-		//throw något
+		throw GroupDoesNotExistException();
 	}
 }
-bool MemServer::createArticle(int groupId, string title, 
+void MemServer::createArticle(int groupId, string title, 
 		string author, string text){
-	auto g = find(groups.begin(), groups.end(),
+	auto g = find_if(groups.begin(), groups.end(),
 		[groupId] (const Group& g) { return g.getId() == groupId; } 
 		);
 	if(g != groups.end()){
-		g->addArticle(Article(, title, author, text));
+		g->addArticle(Article(g->newArticleId(), title, author, text));
 	}else{
-		//throw något
+		throw GroupDoesNotExistException();
 	}
 }
-bool MemServer::deleteArticle(int groupId, int articleId){
-	auto g = find(groups.begin(), groups.end(),
+void MemServer::deleteArticle(int groupId, int articleId){
+	auto g = find_if(groups.begin(), groups.end(),
 		[groupId] (const Group& g) { return g.getId() == groupId; } 
 		);
 	if(g != groups.end()){
-		if(g->deleteArticle(articleId)){
-			return true;
-		}else{
-			return false;
-		}
+		g->deleteArticle(articleId);
 	}else{
-		return false;
+		throw GroupDoesNotExistException();
 	}
 }
 	
 bool MemServer::existsGroup(int groupId){
-	return find(groups.begin(), groups.end(),
+	return find_if(groups.begin(), groups.end(),
 		[groupId] (const Group& g) { return g.getId() == groupId; } 
 		) != groups.end();
 }
 
 Article MemServer::getArticle(int groupId, int articleId){
-	auto g = find(groups.begin(), groups.end(),
+	auto g = find_if(groups.begin(), groups.end(),
 		[groupId] (const Group& g) { return g.getId() == groupId; } 
 		);
 	if(g != groups.end()){
 		return g->getArticle(articleId);
+	} else{
+		throw GroupDoesNotExistException();
 	}
+}
+int MemServer::newGroupId(){
+	return next_group_id++;
 }

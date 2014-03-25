@@ -2,6 +2,11 @@
 #define NEWS_H
 
 #include <string>
+#include <vector>
+#include <algorithm>
+
+class ArticleDoesNotExistException : public std::exception{};
+class GroupDoesNotExistException : public std::exception{};
 
 class Article {
 public:
@@ -10,6 +15,7 @@ public:
 	int getId() const{ return id; };
 	std::string getTitle(){ return title; };
 	std::string getAuthor(){ return author; };
+	std::string getText(){ return text; };
 private:
 	int id;
 	std::string title;
@@ -24,38 +30,41 @@ public:
 	int getId() const{ return id; };
 	std::string getName() const{ return name; };
 	bool addArticle(const Article& a){
-		if(find(articles.begin(), articles.end(), 
-			[a](const Article& arg){ return a.getId() == arg.getId();}) != articles.end()){
-				articles.push_back(a);
-				return true;
-		}else{
+		if(find_if(articles.begin(), articles.end(), 
+				[a](const Article& arg){ return a.getId() == arg.getId(); }) != articles.end()){
 			return false;
+		}else{
+			articles.push_back(a);
+			return true;
 		}
-	}
-	bool deleteArticle(int articleId) {
-		auto a = find(articles.begin(), articles.end(), 
+	};
+	void deleteArticle(int articleId) {
+		auto a = find_if(articles.begin(), articles.end(), 
 			[articleId](const Article& arg){ return arg.getId() == articleId;});
 		if(a != articles.end()){
-				articles.erase(a);
-				return true;
-			}else{
-				return false;
+			articles.erase(a);
+		}else{
+			throw ArticleDoesNotExistException();
 		}
-	}
-	vector<Article> getArticles() const{ return articles;}
+	};
+	std::vector<Article> getArticles() const{ return articles; };
 	Article getArticle(int articleId) const{
-		auto a = find(articles.begin(), articles.end(), 
+		auto a = find_if(articles.begin(), articles.end(), 
 			[articleId](const Article& arg){ return arg.getId() == articleId;});
 		if(a != articles.end()){
 			return *a;
 		}else{
-			//throw något 		
+			throw ArticleDoesNotExistException();
 		}
+	};
+	int newArticleId(){
+		return next_article_id++;
 	}
 private:
 	int id;
 	std::string name;
-	vector<Article> articles;
+	std::vector<Article> articles;
+	int next_article_id = 1;
 };
 
 #endif

@@ -9,6 +9,7 @@
 #include <exception>
 
 struct Argument{
+	Argument(Protocol::a t) : type(t){};
 	Argument(std::string v) : str_val(v), type(Protocol::PAR_STRING){};
 	Argument(int v) : int_val(v), type(Protocol::PAR_NUM){};
 	Protocol::a type;
@@ -16,15 +17,12 @@ struct Argument{
 	int int_val;
 };
 
-class InvalidCommandException : public std::exception{
-	virtual const char* what() const throw(){
-		return "Invalid command";
-	}
-};
+class InvalidCommandException : public std::exception{};
 
 class Command{
 public:
 	Command(std::string str);
+	Command(enum Protocol::a i) : id(i) {};
 	Command(enum Protocol::a i, std::vector<Argument> a) : id(i), args(a) {};
 	enum Protocol::a id;
 	std::vector<Argument> args;

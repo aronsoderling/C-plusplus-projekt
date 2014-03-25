@@ -14,12 +14,14 @@ public:
 	bool deleteGroup(int id);
 	bool existsGroup(int id);
 	std::vector<Article> listArticles(int groupId);
-	bool createArticle(int groupId, std::string title, 
+	void createArticle(int groupId, std::string title, 
 		std::string author, std::string text);
-	bool deleteArticle(int groupId, int articleId);
+	void deleteArticle(int groupId, int articleId);
 	Article getArticle(int groupId, int articleId);
+	int newGroupId();
 private:
 	std::vector<Group> groups;
+	int next_group_id = 1;
 };
 
 #endif

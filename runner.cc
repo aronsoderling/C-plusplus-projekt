@@ -26,7 +26,6 @@ int main(int argc, char* argv[]){
 	unique_ptr<NewsServer> s;
 	if(strcmp(argv[1], "memory") == 0){
 		s = unique_ptr<NewsServer>( new MemServer(port) );
-		s->createGroup("testgroup");
 	}else if(strcmp(argv[1], "database") == 0){
 		//s = unique_ptr<NewsServer>( new DBServer(port) );
 	}else{

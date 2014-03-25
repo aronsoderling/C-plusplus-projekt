@@ -45,8 +45,82 @@ Command NewsServer::executeCommand(Command c){
 			args.push_back(Argument(g.getName()));
 		}
 		return Command(Protocol::ANS_LIST_NG, args);
+
 	} else if (c.id == Protocol::COM_CREATE_NG){
-		createGroup(c.args[0].str_val);
+		if (createGroup(c.args[0].str_val)){
+			args.push_back(Argument( Protocol::ANS_ACK ));
+		} else{
+			args.push_back(Argument(Protocol::ANS_NAK));
+			args.push_back(Argument(Protocol::ERR_NG_ALREADY_EXISTS));
+		}
+		return Command(Protocol::ANS_CREATE_NG, args);
+
+	} else if (c.id == Protocol::COM_DELETE_NG){
+		if (deleteGroup(c.args[0].int_val)){
+			args.push_back(Argument(Protocol::ANS_ACK));
+		} else{
+			args.push_back(Argument(Protocol::ANS_NAK));
+			args.push_back(Argument(Protocol::ERR_NG_DOES_NOT_EXIST));
+		}
+		return Command(Protocol::ANS_DELETE_NG, args);
+
+	} else if (c.id == Protocol::COM_LIST_ART){
+		if (existsGroup(c.args[0].int_val)){
+			vector<Article> articles = listArticles(c.args[0].int_val);
+			args.push_back(Argument(Protocol::ANS_ACK));
+			args.push_back(Argument(articles.size()));
+			for (Article a : articles){
+				args.push_back(Argument(a.getId()));
+				args.push_back(Argument(a.getTitle()));
+			}
+		} else{
+			args.push_back(Argument(Protocol::ANS_NAK));
+			args.push_back(Argument(Protocol::ERR_NG_DOES_NOT_EXIST));
+		}
+		return Command(Protocol::ANS_LIST_ART, args);
+
+	} else if (c.id == Protocol::COM_CREATE_ART){ //COM_CREATE_ART num_p string_p string_p string_p COM_END
+		try{
+			createArticle(c.args[0].int_val, c.args[1].str_val, c.args[2].str_val, c.args[3].str_val);
+			args.push_back(Argument(Protocol::ANS_ACK));
+		} catch(GroupDoesNotExistException e){
+			args.push_back(Argument(Protocol::ANS_NAK));
+			args.push_back(Argument(Protocol::ERR_NG_DOES_NOT_EXIST));
+		}
+		return Command(Protocol::ANS_CREATE_ART, args);
+
+	} else if (c.id == Protocol::COM_DELETE_ART){	//COM_DELETE_ART num_p num_p COM_END
+							//ANS_DELETE_ART[ANS_ACK | ANS_NAK[ERR_NG_DOES_NOT_EXIST | ERR_ART_DOES_NOT_EXIST]] ANS_END
+		try{
+			deleteArticle(c.args[0].int_val, c.args[1].int_val);
+			args.push_back(Argument(Protocol::ANS_ACK));
+		} catch (ArticleDoesNotExistException& e){
+			args.push_back(Argument(Protocol::ANS_NAK));
+			args.push_back(Argument(Protocol::ERR_ART_DOES_NOT_EXIST));
+		} catch (GroupDoesNotExistException& e){
+			args.push_back(Argument(Protocol::ANS_NAK));
+			args.push_back(Argument(Protocol::ERR_NG_DOES_NOT_EXIST));
+		}
+		return Command(Protocol::ANS_DELETE_ART, args);
+
+	} else if (c.id == Protocol::COM_GET_ART){	//COM_GET_ART num_p num_p COM_END
+			//ANS_GET_ART[ANS_ACK string_p string_p string_p | ANS_NAK[ERR_NG_DOES_NOT_EXIST | ERR_ART_DOES_NOT_EXIST]] ANS_END
+		try{
+			Article a = getArticle(c.args[0].int_val, c.args[1].int_val);
+			args.push_back(Argument(Protocol::ANS_ACK));
+			args.push_back(a.getTitle());
+			args.push_back(a.getAuthor());
+			args.push_back(a.getText());
+		} catch (ArticleDoesNotExistException& e){
+			args.push_back(Argument(Protocol::ANS_NAK));
+			args.push_back(Argument(Protocol::ERR_ART_DOES_NOT_EXIST));
+		} catch (GroupDoesNotExistException& e){
+			args.push_back(Argument(Protocol::ANS_NAK));
+			args.push_back(Argument(Protocol::ERR_ART_DOES_NOT_EXIST));
+		}
+		return Command(Protocol::ANS_GET_ART, args);
+	} else {
+		cerr << "OOPS! Something is broken" << endl;
 	}
 	return Command(Protocol::ANS_NAK, vector<Argument>());
 }
