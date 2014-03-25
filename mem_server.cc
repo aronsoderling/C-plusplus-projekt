@@ -8,10 +8,10 @@ using namespace std;
 MemServer::MemServer(int p) : NewsServer(p){}
 
 vector<Group> MemServer::listGroups(){
-	return vector<Group>();
+	return groups;
 }
 void MemServer::createGroup(string name){
-
+	groups.push_back(Group(groups.size()+1, name));
 }
 void MemServer::deleteGroup(string name){
 

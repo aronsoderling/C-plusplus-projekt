@@ -5,6 +5,7 @@
 #include <string>
 #include <vector>
 #include "message_handler.h"
+#include "command.h"
 
 class NewsServer {
 public:

@@ -1,6 +1,7 @@
 #include "connection.h"
 #include "connectionclosedexception.h"
 #include "message_handler.h"
+#include "command.h"
 #include <iostream>
 #include <string>
 #include <stdexcept>
@@ -52,15 +53,16 @@ int main(int argc, char* argv[]) {
 	cout << "Enter command: ";
 	string cmd_str;
 	while (getline(cin, cmd_str)) {
-		Command c(cmd_str);
-		cout << "String '" << cmd_str << "' converted into command " << c << endl;
-
-		try {
+		try{
+			Command c(cmd_str);
+			cout << "String '" << cmd_str << "' converted into command " << c << endl;
 			h.writeMessage(conn, c);
 			Command response = h.readMessage(conn);
 			printResponse(response);
-			cout << "Type another number: ";
-		} catch (ConnectionClosedException&) {
+			cout << "Type another command: ";
+		} catch (InvalidCommandException& e){
+			cout << " Invalid command. Type another command: " << endl;
+		} catch (ConnectionClosedException& e) {
 			cout << " no reply from server. Exiting." << endl;
 			exit(1);
 		}

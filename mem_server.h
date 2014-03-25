@@ -18,7 +18,7 @@ public:
 	void deleteArticle(int groupId, std::string articleId);
 	Article getArticle(int groupId, std::string articleId);
 private:
-
+	std::vector<Group> groups;
 };
 
 #endif

@@ -208,6 +208,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="command.h" />
     <ClInclude Include="connection.h" />
     <ClInclude Include="connectionclosedexception.h" />
     <ClInclude Include="mem_server.h" />
@@ -219,6 +220,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="client.cc" />
+    <ClCompile Include="command.cc" />
     <ClCompile Include="connection.cc" />
     <ClCompile Include="mem_server.cc" />
     <ClCompile Include="message_handler.cc" />
@@ -229,6 +231,8 @@
     <ClCompile Include="test\myserver.cc" />
   </ItemGroup>
   <ItemGroup>
+    <None Include=".gitattributes" />
+    <None Include=".gitignore" />
     <None Include="Makefile" />
     <None Include="README" />
     <None Include="test\Makefile" />

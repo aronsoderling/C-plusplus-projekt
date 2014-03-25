@@ -16,11 +16,11 @@ void NewsServer::run(){
 		auto conn = server.waitForActivity();
 		if (conn != nullptr) {
 			try {
-				cout << "Received bytes" << endl;
+				//cout << "Received bytes" << endl;
 				Command result = executeCommand(h.readMessage(*conn));
-				cout << "Will now write response..." << endl;
+				//cout << "Will now write response..." << endl;
 				h.writeMessage(*conn, result);
-				cout << "Response written" << endl;
+				//cout << "Response written" << endl;
 			} catch (ConnectionClosedException&) {
 				server.deregisterConnection(conn);
 				cout << "Client closed connection" << endl;
@@ -34,10 +34,17 @@ void NewsServer::run(){
 }
 
 Command NewsServer::executeCommand(Command c){
-	cout << "Command recieved: " << static_cast<Protocol::a> (c.id);
-	for(Argument a : c.args){
-		//cout << ch << " ";
+	cout << "Command recieved: " << c << endl;
+	vector<Argument> args;
+
+	if (c.id == Protocol::COM_LIST_NG){
+		vector<Group> groups = listGroups();
+		args.push_back( Argument(groups.size()) );
+		for (Group g : groups){
+			args.push_back(Argument(g.getId()));
+			args.push_back(Argument(g.getName()));
+		}
+		return Command(Protocol::ANS_LIST_NG, args);
 	}
-	cout << endl;
-	return Command(Protocol::ANS_LIST_NG, vector<Argument>());
+	return Command(Protocol::ANS_NAK, vector<Argument>());
 }

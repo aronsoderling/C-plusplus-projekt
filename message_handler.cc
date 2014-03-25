@@ -1,6 +1,7 @@
 #include "message_handler.h"
 #include "connection.h"
 #include "protocol.h"
+#include "command.h"
 #include <vector>
 #include <string>
 #include <sstream>
@@ -18,23 +19,22 @@ Command MessageHandler::readMessage(const Connection& conn) const{
 	vector<Argument> args;
 	string arg;
 
-	unsigned char cmd_byte = conn.read();
+	Protocol::a cmd_id = static_cast<Protocol::a>( conn.read() );
 
 	unsigned char par_type;
 	Protocol::a par_enum;
 
 	while (par_type = conn.read()){
 		par_enum = static_cast<Protocol::a>(par_type);
-		cout << "read byte " << par_enum << endl;
+		//cout << "read " << Protocol::map(par_enum) << endl;
 		if (par_type == Protocol::ANS_END || par_type == Protocol::COM_END){
-			cout << "end of command byte received" << par_type << endl;
+			//cout << "end of command byte received" << par_type << endl;
 			break;
 		} else if (par_type == Protocol::PAR_NUM){
-			cout << "number parameter received" << par_type << endl;
-			Argument arg( readInt(conn) );
+			Argument arg(readInt(conn));
+			//cout << "number parameter received" << arg.int_val << endl;
 			args.push_back(arg);
 		} else if (par_type == Protocol::PAR_STRING){
-			cout << "string parameter received" << par_type << endl;
 			int length = conn.read();
 			stringstream ss;
 			for (int i = 0; i < length; ++i){
@@ -43,12 +43,13 @@ Command MessageHandler::readMessage(const Connection& conn) const{
 			string s;
 			ss >> s;
 			Argument arg(s);
+			//cout << "string parameter received" << arg.str_val << endl;
 			args.push_back(arg);
 		} else{
 			cerr << "Unknown parameter" << endl;
 		}
 	}
-	Command result(cmd_byte, args);
+	Command result(cmd_id, args);
 	cout << "Bytes converted into command: " << result << endl;
 	return result;
 }
@@ -67,10 +68,12 @@ void MessageHandler::writeMessage(const Connection& conn, const Command cmd) con
 			cerr << "Unknown argument type" << endl;
 		}
 	}
-	cout << "wrote end " << static_cast<Protocol::a>(end) << endl;
+	//cout << "wrote end " << static_cast<Protocol::a>(end) << endl;
+	cout << "Wrote cmd: " << cmd << endl;
+	
 	conn.write(end);
 
-	cout << "Wrote message" << endl;
+	//cout << "Wrote message" << endl;
 }
 
 void MessageHandler::writeInt(const Connection& conn, int value){

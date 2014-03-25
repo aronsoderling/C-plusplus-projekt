@@ -23,6 +23,7 @@
     <ClCompile Include="test\myserver.cc">
       <Filter>test</Filter>
     </ClCompile>
+    <ClCompile Include="command.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="connection.h" />
@@ -33,6 +34,7 @@
     <ClInclude Include="news_server.h" />
     <ClInclude Include="protocol.h" />
     <ClInclude Include="server.h" />
+    <ClInclude Include="command.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Makefile" />
@@ -40,5 +42,7 @@
     <None Include="test\Makefile">
       <Filter>test</Filter>
     </None>
+    <None Include=".gitattributes" />
+    <None Include=".gitignore" />
   </ItemGroup>
 </Project>
