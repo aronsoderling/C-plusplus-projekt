@@ -2,6 +2,7 @@
 *.swp
 *.d
 *.a
+*.opensdf
 myclient
 myserver
 client

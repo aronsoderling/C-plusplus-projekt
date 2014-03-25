@@ -23,12 +23,21 @@ struct Command{
 		ss << str;
 		std::string cmd_name;
 		ss >> cmd_name;
-		
+		std::vector<Argument> cmd_args;
+
+		while (ss >> res){
+			if (cmd_name == "list"){
+				cmd_args.push_back(Argument(res));
+			} else if (cmd_name == "something else"){
+
+			}
+		}
+
 		char cmd_id;
 		if (cmd_name == "list"){
-			if (args.size() == 0){
+			if (cmd_args.size() == 0){
 				cmd_id = Protocol::COM_LIST_NG;
-			}else if (args.size() == 1){
+			}else if (cmd_args.size() == 1){
 				cmd_id = Protocol::COM_LIST_ART;
 			}
 		}else if (cmd_name == "create"){
@@ -37,22 +46,20 @@ struct Command{
 			std::cout << "Unknown command" << std::endl;
 		}
 
-		while (ss >> res){
-			if (cmd_name == "list"){
-				args.push_back(Argument(res));
-			} else if (cmd_name == "something else"){
+		
 
-			}
-		}
-
-		Command(cmd_id, args);
+		Command(cmd_id, cmd_args);
 	}
 	Command(char i, std::vector<Argument> a) : id(i), args(a) {};
-
 	
 	char id;
 	std::vector<Argument> args; 
 };
+
+inline std::ostream& operator<<(std::ostream& os, const Command& cmd){
+	os << Protocol::map(static_cast<Protocol::a>(cmd.id));
+	return os;
+}
 
 class MessageHandler {
 public:

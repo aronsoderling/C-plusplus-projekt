@@ -2,6 +2,7 @@
 #include "message_handler.h"
 #include "server.h"
 #include "connectionclosedexception.h"
+#include "protocol.h"
 #include <iostream>
 #include <string>
 
@@ -15,7 +16,7 @@ void NewsServer::run(){
 		auto conn = server.waitForActivity();
 		if (conn != nullptr) {
 			try {
-				cout << "Received command" << endl;
+				cout << "Received bytes" << endl;
 				Command result = executeCommand(h.readMessage(*conn));
 				cout << "Will now write response..." << endl;
 				h.writeMessage(*conn, result);
@@ -33,7 +34,7 @@ void NewsServer::run(){
 }
 
 Command NewsServer::executeCommand(Command c){
-	cout << "Command recieved: ";
+	cout << "Command recieved: " << static_cast<Protocol::a> (c.id);
 	for(Argument a : c.args){
 		//cout << ch << " ";
 	}

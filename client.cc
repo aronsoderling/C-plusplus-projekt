@@ -53,15 +53,12 @@ int main(int argc, char* argv[]) {
 	string cmd_str;
 	while (getline(cin, cmd_str)) {
 		Command c(cmd_str);
+		cout << "String '" << cmd_str << "' converted into command " << c << endl;
 
 		try {
-			cout << cmd_str << " > ";
-			cout << "here 1" << endl;
 			h.writeMessage(conn, c);
-			cout << "here 2" << endl;
 			Command response = h.readMessage(conn);
 			printResponse(response);
-			cout << "here 3" << endl;
 			cout << "Type another number: ";
 		} catch (ConnectionClosedException&) {
 			cout << " no reply from server. Exiting." << endl;
