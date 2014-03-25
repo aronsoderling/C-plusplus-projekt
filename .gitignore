@@ -12,3 +12,4 @@ runner.exe
 *.d.*
 Generated Files
 Release
+Debug

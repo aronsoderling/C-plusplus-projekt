@@ -11,12 +11,13 @@ public:
 	MemServer(int port);
 	std::vector<Group> listGroups();
 	bool createGroup(std::string name);
-	bool deleteGroup(std::string name);
+	bool deleteGroup(int id);
+	bool existsGroup(int id);
 	std::vector<Article> listArticles(int groupId);
 	bool createArticle(int groupId, std::string title, 
 		std::string author, std::string text);
-	bool deleteArticle(int groupId, std::string articleId);
-	Article getArticle(int groupId, std::string articleId);
+	bool deleteArticle(int groupId, int articleId);
+	Article getArticle(int groupId, int articleId);
 private:
 	std::vector<Group> groups;
 };
