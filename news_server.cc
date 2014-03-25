@@ -18,7 +18,7 @@ void NewsServer::run(){
 			try {
 				//cout << "Received bytes" << endl;
 				Command result = executeCommand(h.readMessage(*conn));
-				//cout << "Will now write response..." << endl;
+				cout << "Response: " << result << endl;
 				h.writeMessage(*conn, result);
 				//cout << "Response written" << endl;
 			} catch (ConnectionClosedException&) {
@@ -120,7 +120,7 @@ Command NewsServer::executeCommand(Command c){
 		}
 		return Command(Protocol::ANS_GET_ART, args);
 	} else {
-		cerr << "OOPS! Something is broken" << endl;
+		cerr << "OOPS! Something is broken (command id: " << c.id << " mapped to:" << Protocol::map(c.id) << ")" << endl;
 	}
 	return Command(Protocol::ANS_NAK, vector<Argument>());
 }

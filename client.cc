@@ -13,17 +13,66 @@ using namespace std;
 string readString(const Connection& conn) {
 	string s;
 	char ch;
-	cout << "here11" << endl;
-	while (ch = conn.read()) {
+	while ((ch = conn.read())) {
 		s += ch;
 		cout << ch << endl;
 	}
-	cout << "here12" << endl;
 	return s;
 }
 
-void printResponse(Command res){
+void printResponse(Command cmd){
+	stringstream ss;
+	if (cmd.ok()){
+		switch (cmd.id){
+		case Protocol::ANS_CREATE_ART: ss << "Article was created successfully \n"; break;
+		case Protocol::ANS_CREATE_NG: ss << "News group was created successfully \n";break;
+		case Protocol::ANS_DELETE_ART: ss << "Article was deleted successfully \n"; break;
+		case Protocol::ANS_DELETE_NG: ss << "News group was deleted successfully \n"; break;
+		case Protocol::ANS_GET_ART: 
+			ss << cmd.args[1].str_val << '\t' << "Author: " << cmd.args[2].str_val << '\n' 
+					<< cmd.args[3].str_val << '\n'; 
+			break;
+		case Protocol::ANS_LIST_ART:
+			for (size_t i = 2; i < cmd.args.size(); i += 2){
+				ss << cmd.args[i].int_val << ". ";
+				ss << cmd.args[i + 1].str_val << '\n';
+			}
+			break;
+		case Protocol::ANS_LIST_NG: 
+			for (size_t i = 1; i < cmd.args.size(); i += 2){
+				ss << cmd.args[i].int_val << ". ";
+				ss << cmd.args[i + 1].str_val << '\n';
+			}
+			break;
+		default: break;
+		}
+	} else {
+		switch (cmd.id){
+		case Protocol::ANS_CREATE_ART: ss << "Unable to create article. "; break;
+		case Protocol::ANS_CREATE_NG: ss << "Unable to create news group. "; break;
+		case Protocol::ANS_DELETE_ART: ss << "Unable to delete article. "; break;
+		case Protocol::ANS_DELETE_NG: ss << "Unable to delete article. "; break;
+		case Protocol::ANS_GET_ART: ss << "Unable to create article. "; break;
+		case Protocol::ANS_LIST_ART: ss << "Unable to list articles. "; break;
+		default: break;
+		}
+		ss << cmd.errMsg() << '\n';
+	}
+	cout << ss.str();
+}
 
+void showHelp(){
+	cout << "Available commands: " << endl;
+	cout << "   listg				- list groups " << endl;
+	cout << "   createg name				- create group " << endl;
+	cout << "   deleteg group-id			- delete group " << endl;
+	cout << "   lista group-id			- list articles in group" << endl;
+	cout << "   createa group-id title author text	- create article " << endl;
+	cout << "   deletea group-id article-id		- delete article" << endl;
+	cout << "   read group-id article-id		- read article" << endl;
+	cout << "   help				- show this help " << endl;
+	cout << "   quit				- exit the program " << endl;
+	cout << "news> ";
 }
 
 int main(int argc, char* argv[]) {
@@ -49,23 +98,29 @@ int main(int argc, char* argv[]) {
 
 	MessageHandler h;	
 
+	showHelp();
 
-	cout << "Enter command: ";
 	string cmd_str;
 	while (getline(cin, cmd_str)) {
 		try{
 			Command c(cmd_str);
-			cout << "String '" << cmd_str << "' converted into command " << c << endl;
+			//clog << "String '" << cmd_str << "' converted into command " << c << endl;
 			h.writeMessage(conn, c);
 			Command response = h.readMessage(conn);
 			printResponse(response);
-			cout << "Type another command: ";
+			cout << "news> ";
 		} catch (InvalidCommandException& e){
-			cout << " Invalid command. Type another command: " << endl;
+			if (cmd_str == "help"){
+				showHelp();
+				continue;
+			} else if (cmd_str == "exit"){
+				exit(0);
+			}
+			cout << "Invalid command. " << endl;
+			cout << "news> ";
 		} catch (ConnectionClosedException& e) {
-			cout << " no reply from server. Exiting." << endl;
+			cout << "No reply from server. Exiting." << endl;
 			exit(1);
 		}
 	}
 }
-

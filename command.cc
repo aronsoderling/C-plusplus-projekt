@@ -7,8 +7,6 @@
 using namespace std;
 
 Command::Command(string str){
-	string res_str;
-	int res_int;
 	stringstream ss;
 	string name;
 
@@ -34,36 +32,41 @@ Command::Command(string str){
 	}
 
 	switch(id){
-	case Protocol::COM_CREATE_NG:
-		ss >> res_str;
-		args.push_back(Argument(res_str));
-		break;
+	case Protocol::COM_CREATE_NG: readStr(ss, args); break;
 	case Protocol::COM_DELETE_NG:
-	case Protocol::COM_LIST_ART:
-		ss >> res_int;
-		args.push_back(Argument(res_int));
-		break;
+	case Protocol::COM_LIST_ART: readInt(ss, args); break;
 	case Protocol::COM_CREATE_ART:
-		ss >> res_int;
-		args.push_back(Argument(res_int));
-		ss >> res_str;
-		args.push_back(Argument(res_str));
-		ss >> res_str;
-		args.push_back(Argument(res_str));
-		ss >> res_str;
-		args.push_back(Argument(res_str));
+		readInt(ss, args);
+		readStr(ss, args);
+		readStr(ss, args);
+		readStr(ss, args);
 		break;
 	case Protocol::COM_DELETE_ART:
 	case Protocol::COM_GET_ART:
-		ss >> res_int;
-		args.push_back(Argument(res_int));
-		ss >> res_int;
-		args.push_back(Argument(res_int));
+		readInt(ss, args);
+		readInt(ss, args);
 		break;
+	default: break;
 	}
+	
 
-	cout << "name: '" << name << "', id: " << Protocol::map(id)
-			<< " args_length: " << args.size() << endl;
+	//cout << "name: '" << name << "', id: " << Protocol::map(id)
+	//		<< " args_length: " << args.size() << endl;
+}
+
+bool Command::ok(){
+	return !(args[0].type == Protocol::ANS_NAK);
+}
+string Command::errMsg(){
+	if (!ok()){
+		switch (args[1].type){
+		case Protocol::ERR_ART_DOES_NOT_EXIST: return "Article does not exist. ";
+		case Protocol::ERR_NG_ALREADY_EXISTS: return "News group already exists. ";
+		case Protocol::ERR_NG_DOES_NOT_EXIST: return "News group does not exist. ";
+		default: break;
+		}
+	}
+	return "";
 }
 
 ostream& operator<<(ostream& os, const Command& cmd){
@@ -74,4 +77,20 @@ ostream& operator<<(ostream& os, const Command& cmd){
 		else os << " " << Protocol::map(a.type);
 	}
 	return os;
+}
+
+void Command::readStr(stringstream& ss, vector<Argument>& args){
+	string result;
+	if (!ss.good()) throw InvalidCommandException();
+	ss >> result;
+	if (result == "") throw InvalidCommandException();
+	args.push_back(Argument(result));
+}
+
+void Command::readInt(stringstream& ss, vector<Argument>& args){
+	int result;
+	if (!ss.good()) throw InvalidCommandException();
+	ss >> result;
+	if (result == 0) throw InvalidCommandException();
+	args.push_back(Argument(result));
 }

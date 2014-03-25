@@ -19,36 +19,39 @@ Command MessageHandler::readMessage(const Connection& conn) const{
 	vector<Argument> args;
 	string arg;
 
-	Protocol::a cmd_id = static_cast<Protocol::a>( conn.read() );
+	Protocol::a cmd_id = static_cast<Protocol::a>(conn.read());
+
+	cout << "command start: " << Protocol::map(cmd_id) << endl;
 
 	unsigned char par_type;
 	Protocol::a par_enum;
 
-	while (par_type = conn.read()){
+	while ((par_type = conn.read())){
 		par_enum = static_cast<Protocol::a>(par_type);
+		cout << "	" << Protocol::map(par_enum) << endl;
 		Argument arg(par_enum);
 		//cout << "read " << Protocol::map(par_enum) << endl;
 		if (par_type == Protocol::ANS_END || par_type == Protocol::COM_END){
-			//cout << "end of command byte received" << par_type << endl;
+			//cout << "	end of command byte received" << Protocol::map(par_enum) << endl;
 			break;
 		} else if (par_type == Protocol::PAR_NUM){
 			arg = Argument(readInt(conn));
 			//cout << "number parameter received" << arg.int_val << endl;
 		} else if (par_type == Protocol::PAR_STRING){
-			int length = conn.read();
+			int length = readInt(conn);
+			cout << "	" << length << endl;
 			stringstream ss;
 			for (int i = 0; i < length; ++i){
 				ss << conn.read();
+				cout << "read char" << endl;
 			}
-			string s;
-			ss >> s;
-			arg = Argument(s);
+			arg = Argument(ss.str());
 			//cout << "string parameter received" << arg.str_val << endl;
 		}
 		args.push_back(arg);
 	}
 	Command result(cmd_id, args);
-	cout << "Bytes converted into command: " << result << endl;
+	cout << "	Bytes converted into command: " << result << endl;
 	return result;
 }
 
@@ -65,7 +68,7 @@ void MessageHandler::writeMessage(const Connection& conn, const Command cmd) con
 		}
 	}
 	//cout << "wrote end " << static_cast<Protocol::a>(end) << endl;
-	cout << "Wrote cmd: " << cmd << endl;
+	//cout << "Wrote cmd: " << cmd << endl;
 	
 	conn.write(end);
 
@@ -88,7 +91,7 @@ int MessageHandler::readInt(const Connection& conn){
 }
 
 void MessageHandler::writeString(const Connection& conn, string value){
-	conn.write(value.size());
+	writeInt(conn, value.size());
 	for (char& c : value) {
 		conn.write(c);
 	}

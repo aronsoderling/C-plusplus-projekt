@@ -10,8 +10,8 @@
 
 struct Argument{
 	Argument(Protocol::a t) : type(t){};
-	Argument(std::string v) : str_val(v), type(Protocol::PAR_STRING){};
-	Argument(int v) : int_val(v), type(Protocol::PAR_NUM){};
+	Argument(std::string v) : type(Protocol::PAR_STRING), str_val(v){};
+	Argument(int v) : type(Protocol::PAR_NUM), int_val(v){};
 	Protocol::a type;
 	std::string str_val;
 	int int_val;
@@ -24,8 +24,13 @@ public:
 	Command(std::string str);
 	Command(enum Protocol::a i) : id(i) {};
 	Command(enum Protocol::a i, std::vector<Argument> a) : id(i), args(a) {};
+	bool ok();
+	std::string errMsg();
 	enum Protocol::a id;
 	std::vector<Argument> args;
+private:
+	void readStr(std::stringstream& ss, std::vector<Argument>& args);
+	void readInt(std::stringstream& ss, std::vector<Argument>& args);
 };
 
 std::ostream& operator<<(std::ostream& os, const Command& cmd);

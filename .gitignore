@@ -6,9 +6,9 @@
 myclient
 myserver
 client
-client.exe
 runner
-runner.exe
+*.exe
+*.exe.*
 *.d.*
 Generated Files
 Release

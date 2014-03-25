@@ -12,7 +12,6 @@ vector<Group> MemServer::listGroups(){
 	return groups;
 }
 bool MemServer::createGroup(string name){
-	cout << "createGroup(" << name << ")" << endl;
 	if (groups.empty()){
 		groups.push_back(Group(newGroupId(), name));
 		return true;
