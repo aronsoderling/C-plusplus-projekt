@@ -211,6 +211,7 @@
     <ClInclude Include="command.h" />
     <ClInclude Include="connection.h" />
     <ClInclude Include="connectionclosedexception.h" />
+    <ClInclude Include="db_server.h" />
     <ClInclude Include="mem_server.h" />
     <ClInclude Include="message_handler.h" />
     <ClInclude Include="news.h" />
@@ -222,6 +223,7 @@
     <ClCompile Include="client.cc" />
     <ClCompile Include="command.cc" />
     <ClCompile Include="connection.cc" />
+    <ClCompile Include="db_server.cc" />
     <ClCompile Include="mem_server.cc" />
     <ClCompile Include="message_handler.cc" />
     <ClCompile Include="news_server.cc" />

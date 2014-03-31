@@ -1,4 +1,5 @@
 #include "mem_server.h"
+#include "db_server.h"
 
 #include <iostream>
 #include <string>
@@ -27,7 +28,7 @@ int main(int argc, char* argv[]){
 	if(strcmp(argv[1], "memory") == 0){
 		s = unique_ptr<NewsServer>( new MemServer(port) );
 	}else if(strcmp(argv[1], "database") == 0){
-		//s = unique_ptr<NewsServer>( new DBServer(port) );
+		s = unique_ptr<NewsServer>( new DbServer(port) );
 	}else{
 		cerr << "Wrong type. Type must be memory or database. " << endl;
 		return 1;

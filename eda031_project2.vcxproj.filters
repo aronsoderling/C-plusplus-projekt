@@ -24,6 +24,7 @@
       <Filter>test</Filter>
     </ClCompile>
     <ClCompile Include="command.cc" />
+    <ClCompile Include="db_server.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="connection.h" />
@@ -35,6 +36,7 @@
     <ClInclude Include="protocol.h" />
     <ClInclude Include="server.h" />
     <ClInclude Include="command.h" />
+    <ClInclude Include="db_server.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Makefile" />

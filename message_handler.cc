@@ -9,9 +9,7 @@
 
 using namespace std;
 
-MessageHandler::MessageHandler() {
-}
-
+MessageHandler::MessageHandler() {}
 
 Command MessageHandler::readMessage(const Connection& conn) const{
 	stringstream ss;
@@ -67,12 +65,7 @@ void MessageHandler::writeMessage(const Connection& conn, const Command cmd) con
 			writeString(conn, arg.str_val);
 		}
 	}
-	//cout << "wrote end " << static_cast<Protocol::a>(end) << endl;
-	//cout << "Wrote cmd: " << cmd << endl;
-	
 	conn.write(end);
-
-	//cout << "Wrote message" << endl;
 }
 
 void MessageHandler::writeInt(const Connection& conn, int value){

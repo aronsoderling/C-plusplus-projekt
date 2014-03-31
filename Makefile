@@ -25,7 +25,7 @@ libclientserver.a: connection.o server.o
 	ar rv libclientserver.a  connection.o server.o
 	ranlib libclientserver.a
 
-runner: runner.o mem_server.o news_server.o message_handler.o server.o connection.o command.o
+runner: runner.o mem_server.o db_server.o news_server.o message_handler.o server.o connection.o command.o
 client: client.o connection.o message_handler.o command.o
 
 # Phony targets

@@ -10,16 +10,6 @@
 
 using namespace std;
 
-string readString(const Connection& conn) {
-	string s;
-	char ch;
-	while ((ch = conn.read())) {
-		s += ch;
-		cout << ch << endl;
-	}
-	return s;
-}
-
 void printResponse(Command cmd){
 	stringstream ss;
 	if (cmd.ok()){
