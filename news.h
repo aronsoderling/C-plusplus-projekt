@@ -26,9 +26,11 @@ private:
 
 class Group {
 public:
+	Group() : id(0), name(""){};
 	Group(int i, std::string n) : id(i), name(n){};
 	int getId() const{ return id; };
 	std::string getName() const{ return name; };
+
 	bool addArticle(const Article& a){
 		if(find_if(articles.begin(), articles.end(), 
 				[a](const Article& arg){ return a.getId() == arg.getId(); }) != articles.end()){
