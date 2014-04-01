@@ -25,6 +25,8 @@ public:
 	std::vector<std::string> readDir(std::string dir_name);
 	void deleteDir(std::string dir);
 	void writeGroups(std::vector<Group> groups);
+	void writeArticles(int groupId, int next_article_id, std::vector<Article> articles);
+	int getNextArticleId(int groupId);
 protected:
 	int next_group_id = 1;
 };

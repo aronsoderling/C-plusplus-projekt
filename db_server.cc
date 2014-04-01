@@ -92,7 +92,7 @@ vector<Article> DbServer::listArticles(int groupId){
 	vector<Article> articles;
 
 	if (g.getId() == 0)
-		return articles;
+		throw GroupDoesNotExistException();
 	
 	string line;
 	stringstream filename;
@@ -118,28 +118,40 @@ vector<Article> DbServer::listArticles(int groupId){
 }
 
 void DbServer::createArticle(int groupId, string title, string author, string text){
-	/*Group g = getGroup(groupId);
+	vector<Article> articles = listArticles(groupId);
 
-	if (g.getId() != 0){
-		Article a(g.newArticleId(), title, author, text);
-		
-		stringstream ss;
-		ss << "groups/" << g.getFolderName() << "/" << a.getId();
+	int next_article_id = getNextArticleId(groupId);
+	Article a(++next_article_id, title, author, text);
+	articles.push_back(a);
 
-		ofstream myfile;
-		myfile.open(ss.str());
-		myfile << title << ',' << author << ',' << text;
-		myfile.close();
-	} else{
-		throw GroupDoesNotExistException();
-	}*/
+	stringstream ss;
+	ss << "groups/" << groupId << "/" << a.getId();
+
+	ofstream myfile;
+	myfile.open(ss.str());
+	myfile << author << endl;
+	myfile << text;
+	myfile.close();
+
+	writeArticles(groupId, next_article_id, articles);
 }
 
 void DbServer::deleteArticle(int groupId, int articleId){
-	/*Group g = getGroup(groupId);
+	vector<Article> articles = listArticles(groupId);
+
+	auto pos = find_if(articles.begin(), articles.end(),
+		[articleId](const Article& a) { return a.getId() == articleId; });
+	if (pos != articles.end()){
+		articles.erase(pos);
+	} else{
+		throw ArticleDoesNotExistException();
+	}
+
 	stringstream ss;
-	ss << "groups/" << g.getFolderName() << "/" << articleId;
-	deleteFile(ss.str());*/
+	ss << "groups/" << groupId << "/" << articleId;
+	//deleteFile(ss.str());
+
+	writeArticles(groupId, getNextArticleId(groupId), articles);
 }
 	
 bool DbServer::existsGroup(int groupId){
@@ -172,12 +184,35 @@ Group DbServer::getGroup(int groupId){
 }
 
 Article DbServer::getArticle(int groupId, int articleId){
-	/*Group g = getGroup(groupId);
-	if (g.getId() != 0){
-		
-	} else{
-		throw GroupDoesNotExistException();
-	}*/
+	vector<Article> articles = listArticles(groupId);
+
+	string line;
+	//string text = "";
+	string author;
+	stringstream filename;
+	filename << "groups/" << groupId << "/" << articleId;
+	ifstream infile(filename.str());
+	if (!infile.is_open()){
+		infile.close();
+		cout << "Unable to read file: groups/group_info" << endl;
+		return Article();
+	}
+	
+	getline(infile, author);
+	std::string text((std::istreambuf_iterator<char>(infile)), std::istreambuf_iterator<char>());
+	infile.close();
+	Article a;
+
+	auto it = find_if(articles.begin(), articles.end(),
+		[articleId](const Article& a) { return a.getId() == articleId; }
+	);
+	if (it != articles.end()){
+		a = *it;
+		cout << text << endl;
+		a.setAuthor(author);
+		a.setText(text);
+	}
+	return a;
 }
 
 vector<string> DbServer::readDir(string dir_name){
@@ -211,4 +246,30 @@ void DbServer::writeGroups(vector<Group> groups){
 		myfile << g.getId() << " " << g.getName() << endl;
 	}
 	myfile.close();
+}
+
+void DbServer::writeArticles(int groupId, int next_article_id, vector<Article> articles){
+	ofstream myfile;
+	stringstream ss;
+	ss << "groups/" << groupId << "/article_info";
+	myfile.open(ss.str());
+	myfile << next_article_id << endl;
+	for (Article a : articles){
+		myfile << a.getId() << " " << a.getTitle() << endl;
+	}
+	myfile.close();
+}
+
+int DbServer::getNextArticleId(int groupId){
+	string line;
+	stringstream filename;
+	filename << "groups/" << groupId << "/article_info";
+	ifstream infile(filename.str());
+	if (!infile.is_open()){
+		infile.close();
+		cout << "Unable to read file: groups/" << groupId << "/article_info" << endl;
+	}
+
+	getline(infile, line);
+	return strtol(line.c_str(), 0, 10); // stoi(argv[2]); does not work in cygwin
 }

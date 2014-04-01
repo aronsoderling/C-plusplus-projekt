@@ -10,12 +10,19 @@ class GroupDoesNotExistException : public std::exception{};
 
 class Article {
 public:
+	Article(){};
 	Article(int i, std::string ti, std::string a, std::string te) : 
 		id(i), title(ti), author(a), text(te) {};
 	int getId() const{ return id; };
 	std::string getTitle(){ return title; };
 	std::string getAuthor(){ return author; };
 	std::string getText(){ return text; };
+	void setText(std::string t){
+		text = t;
+	};
+	void setAuthor(std::string a){
+		author = a;
+	};
 private:
 	int id;
 	std::string title;
