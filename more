@@ -1,2 +1,0 @@
-g++ -g -O2 -Wall -W -pedantic-errors -Wmissing-braces -Wparentheses -Wold-style-cast  -std=c++11    -c -o db_server.o db_server.cc
-<builtin>: recipe for target 'db_server.o' failed
