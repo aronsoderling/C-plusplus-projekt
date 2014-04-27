@@ -28,7 +28,7 @@ public:
 	void writeArticles(int groupId, int next_article_id, const std::vector<Article>& articles);
 	int getNextArticleId(int groupId) const;
 protected:
-	mutable int next_group_id = 1;
+	mutable int next_group_id = 0;
 };
 
 #endif

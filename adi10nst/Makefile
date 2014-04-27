@@ -25,11 +25,11 @@ libclientserver.a: src/connection.o src/server.o
 	ar rv libclientserver.a  src/connection.o src/server.o
 	ranlib libclientserver.a
 
-db_server: src/db_server.o src/news_server.o src/message_handler.o src/server.o src/connection.o src/command.o
+db_server: src/db_server.o src/news_server.o src/message_handler.o src/command.o libclientserver.a
 	$(CC) $^ -o bin/db_server
-mem_server: src/mem_server.o src/news_server.o src/message_handler.o src/server.o src/connection.o src/command.o
+mem_server: src/mem_server.o src/news_server.o src/message_handler.o src/command.o libclientserver.a
 	$(CC) $^ -o bin/mem_server
-client: src/client.o src/connection.o src/message_handler.o src/command.o
+client: src/client.o src/message_handler.o src/command.o libclientserver.a
 	$(CC) $^ -o bin/client
 
 # Phony targets
@@ -37,7 +37,8 @@ client: src/client.o src/connection.o src/message_handler.o src/command.o
 
 # Standard clean
 clean:
-	rm -f src/*.o libclientserver.a src/*.d
+	rm -f src/*.o libclientserver.a src/*.d bin/* 
+	rm -fR groups
 
 # Generate dependencies in *.d files
 %.d: %.cc

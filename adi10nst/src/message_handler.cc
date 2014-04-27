@@ -19,14 +19,14 @@ Command MessageHandler::readMessage(const Connection& conn) const{
 
 	Protocol::a cmd_id = static_cast<Protocol::a>(conn.read());
 
-	cout << "command start: " << Protocol::map(cmd_id) << endl;
+	//cout << "command start: " << Protocol::map(cmd_id) << endl;
 
 	unsigned char par_type;
 	Protocol::a par_enum;
 
 	while ((par_type = conn.read())){
 		par_enum = static_cast<Protocol::a>(par_type);
-		cout << "	" << Protocol::map(par_enum) << endl;
+		//cout << "	" << Protocol::map(par_enum) << endl;
 		Argument arg(par_enum);
 		//cout << "read " << Protocol::map(par_enum) << endl;
 		if (par_type == Protocol::ANS_END || par_type == Protocol::COM_END){
@@ -37,11 +37,11 @@ Command MessageHandler::readMessage(const Connection& conn) const{
 			//cout << "number parameter received" << arg.int_val << endl;
 		} else if (par_type == Protocol::PAR_STRING){
 			int length = readInt(conn);
-			cout << "	" << length << endl;
+			//cout << "	" << length << endl;
 			stringstream ss;
 			for (int i = 0; i < length; ++i){
 				ss << conn.read();
-				cout << "read char" << endl;
+				//cout << "read char" << endl;
 			}
 			arg = Argument(ss.str());
 			//cout << "string parameter received" << arg.str_val << endl;
@@ -49,7 +49,7 @@ Command MessageHandler::readMessage(const Connection& conn) const{
 		args.push_back(arg);
 	}
 	Command result(cmd_id, args);
-	cout << "	Bytes converted into command: " << result << endl;
+	//cout << "	Bytes converted into command: " << result << endl;
 	return result;
 }
 

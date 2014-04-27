@@ -10,7 +10,7 @@
 class NewsServer {
 public:
 	virtual std::vector<Group> listGroups() const = 0;
-	virtual bool createGroup(const std::string& name);
+	virtual bool createGroup(const std::string& name) = 0;
 	virtual bool deleteGroup(int id) = 0;
 	virtual bool existsGroup(int id) const = 0;
 	virtual std::vector<Article> listArticles(int groupId) const = 0;

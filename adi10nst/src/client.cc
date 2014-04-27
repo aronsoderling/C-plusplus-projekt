@@ -59,15 +59,15 @@ void showHelp(){
 	cout << "   lista group-id			- list articles in group" << endl;
 	cout << "   createa group-id title author text	- create article " << endl;
 	cout << "   deletea group-id article-id		- delete article" << endl;
-	cout << "   read group-id article-id		- read article" << endl;
+	cout << "   reada group-id article-id		- read article" << endl;
 	cout << "   help				- show this help " << endl;
-	cout << "   quit				- exit the program " << endl;
+	cout << "   exit				- exit the program " << endl;
 	cout << "news> ";
 }
 
 int main(int argc, char* argv[]) {
 	if (argc != 3) {
-		cerr << "Usage: myclient host-name port-number" << endl;
+		cerr << "Usage: client <host-name> <port-number>" << endl;
 		exit(1);
 	}
 	

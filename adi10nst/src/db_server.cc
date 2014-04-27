@@ -210,7 +210,7 @@ Article DbServer::getArticle(int groupId, int articleId) const{
 	);
 	if (it != articles.end()){
 		a = *it;
-		cout << text << endl;
+		//cout << text << endl;
 		a.setAuthor(author);
 		a.setText(text);
 	}
